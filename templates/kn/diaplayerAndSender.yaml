@@ -1,0 +1,29 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: DISPLAYNAME
+spec:
+  template:
+    spec:
+      containers:
+        - image: gcr.io/knative-releases/knative.dev/eventing/cmd/event_display
+
+--- 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: curl
+  name: curl-serverlessbench
+spec:
+  containers:
+    # This could be any image that we can SSH into and has curl.
+  - image: radial/busyboxplus:curl
+    imagePullPolicy: IfNotPresent
+    name: curl
+    resources: {}
+    stdin: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    tty: true

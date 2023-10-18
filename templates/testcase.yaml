@@ -1,0 +1,18 @@
+execution-time: 
+  type: single
+  dir: ./testcase/testcase1-Execution-Time
+coldstart-time: 
+  type: single
+  dir: ./testcase/testcase2-ColdStart-Time
+warmstart-time: 
+  type: single
+  dir: ./testcase/testcase3-WarmStart-Time
+cost-performance: 
+  type: single
+  dir: ./testcase/testcase4-Cost-Performance
+communication-latancy: 
+  type: workflow
+  dir: ./testcase/testcase5-Communication-Latancy
+varied-resource-requirements: 
+  type: workflow
+  dir: ./testcase/testcase6-Varied-Resource-Requirements

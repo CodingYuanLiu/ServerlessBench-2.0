@@ -1,0 +1,9 @@
+/cli
+.serverless.config
+.serverless.**.config
+__pycache__
+template
+build
+.DS_Store
+testResult
+internal/util/myres.go

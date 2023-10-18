@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: NAME
+spec:
+  template:
+    metadata:
+      name: NAME-bench
+      annotations:
+        # Knative concurrency-based autoscaling (default).
+        # autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+        # autoscaling.knative.dev/metric: concurrency
+        # Target 1 requests in-flight per pod.
+        # autoscaling.knative.dev/target: "2"
+        # Disable scale to zero with a min scale of 1.
+        # autoscaling.knative.dev/min-scale: "1"
+        # Limit scaling to 100 pods.
+        # autoscaling.knative.dev/max-scale: "4"
+    spec:
+      containerConcurrency: 1
+      containers:
+        - name: benchmark-server
+          image: USERNAME/NAME:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: MEMMi
+              cpu: CPUm
+            requests:
+              memory: 0
+              cpu: 0

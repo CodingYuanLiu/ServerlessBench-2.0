@@ -1,0 +1,39 @@
+# temp container to build python from source
+FROM docker.io/library/debian:11 as builder-python
+# RUN sed -i '/stretch\/updates/d' /etc/apt/sources.list
+# RUN apt-get -y update  --fix-missing &&  apt-get -y upgrade&& apt-get -y install --fix-missing libldap librtmp1 libcurl3 zlib1g
+RUN apt-get -y update && apt-get -y install --fix-missing curl build-essential python-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libxml2-dev libxslt-dev 
+RUN curl https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz -o python.tgz && tar xf python.tgz
+RUN cd Python-3.7.10 && ./configure --enable-shared --prefix=/opt/py --with-ssl
+RUN cd Python-3.7.10 && make -j `nproc`
+RUN cd Python-3.7.10 && make install
+
+# temp container to build the go program
+FROM docker.io/library/debian:11 as builder-golang
+# RUN sed -i '/stretch\/updates/d' /etc/apt/sources.list
+COPY --from=builder-python /opt/py /opt/py
+RUN echo /opt/py/lib > /etc/ld.so.conf.d/py.conf && ldconfig
+RUN apt-get -y update && apt-get -y install git curl pkg-config gcc
+RUN curl -L https://golang.org/dl/go1.16.2.linux-amd64.tar.gz -o go.tar.gz && tar -C /usr/local -xzf go.tar.gz
+ENV PKG_CONFIG_PATH=/opt/py/lib/pkgconfig
+COPY wrapper /wrapper
+RUN cd /wrapper && /usr/local/go/bin/go get . && /usr/local/go/bin/go build -o /opt/wrapper/bin/server .
+COPY pyfiles /pyfiles
+# RUN cd / 
+# COPY pyflie /wrapper
+#/usr/local/go/bin/go get .
+
+
+FROM docker.io/library/debian:11-slim
+# RUN sed -i '/stretch\/updates/d' /etc/apt/sources.list
+COPY --from=builder-golang /opt/py /opt/py
+COPY --from=builder-golang /opt/wrapper/bin/server /server
+COPY --from=builder-golang /pyfiles /pyfiles
+RUN echo /opt/py/lib > /etc/ld.so.conf.d/py.conf && ldconfig
+
+RUN apt-get -y update && apt install python3-openssl -y
+
+# RUN apt install libbz2-dev libffi-dev libssl-dev
+RUN /opt/py/bin/pip3 install --no-cache-dir -r /pyfiles/requirements.txt
+# Run the web service on container startup.
+CMD ["/server"]

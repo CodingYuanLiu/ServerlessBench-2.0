@@ -1,0 +1,10 @@
+apiVersion: flows.knative.dev/v1
+kind: Sequence
+metadata:
+  name: NAME
+spec:
+  channelTemplate:
+    apiVersion: messaging.knative.dev/v1
+    kind: InMemoryChannel
+  steps:
+    

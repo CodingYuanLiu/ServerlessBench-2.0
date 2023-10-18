@@ -1,0 +1,16 @@
+# offical docker image of python debian buster variant
+ARG PY_BASE_IMG
+
+FROM ${PY_BASE_IMG}
+
+RUN apt-get update -y && apt-get install -y python3-dev libev-dev
+WORKDIR /app
+
+COPY requirements.txt /app
+RUN pip3 install -r requirements.txt
+
+COPY . /app
+
+ENV PYTHONUNBUFFERED 1
+ENTRYPOINT ["python3"]
+CMD ["server.py"]

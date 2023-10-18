@@ -1,0 +1,27 @@
+name: testExample
+metric-controller: 
+  default:
+    - name: execution-time
+    - name: coldstart-time
+    - name: warmstart-time
+    - name: cost-performance
+  custom:
+platform: openwhisk
+resultpath: ./testResult
+component:
+  function:
+    - name: numaddone
+      dirpath: ./apps/function/numAddOne
+      reqpath: ./apps/function/numAddOne/requirements.txt
+      memory : 128
+    - name: getlen
+      dirpath: ./apps/function/strLen
+      reqpath: ./apps/function/strLen/requirements.txt
+      memory : 512
+test:
+  - name: getlen
+    type: single
+    param: 
+      default: 
+      other:
+        - value: "{'text':'dsf'}"

@@ -1,0 +1,5 @@
+{ 
+   "payload":  "./inputs/testvideo4.mp4", 
+   "outputfile" : "./inputs/testoutvideo4.mp4",
+   "thumb_width" : "640:360"
+}
